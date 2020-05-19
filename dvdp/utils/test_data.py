@@ -1,8 +1,9 @@
 import pytest
 from pathlib import Path
 import numpy as np
+import cv2
 
-from dvdp.utils.data import DataSaver
+from dvdp.utils.data import DataSaver, fetch_images
 
 
 def test_create_and_load_chunks(tmpdir):
@@ -43,3 +44,24 @@ def test_with_image(tmpdir):
         for image_rs, image_exp in zip(images_rs, images_exp):
             assert np.all(image_rs == image_exp)
 
+
+def test_fetch_images(tmpdir):
+    image_types = ['.jpg', '.bmp', '.tiff', '.png']
+    exp_images = []
+    i = 0
+    for image_type in image_types:
+        print(image_type)
+        gray = np.full((10, 10), i*25, dtype=np.uint8)
+        color = np.full((10, 10, 3), i*25, dtype=np.uint8)
+        i += 1
+        cv2.imwrite(str(tmpdir / f'{i}{image_type}'), gray)
+        exp_images.append(gray)
+        i += 1
+        cv2.imwrite(str(tmpdir / f'{i}{image_type}'), color)
+        exp_images.append(color)
+
+    fetched_images = fetch_images(tmpdir, True)
+
+    for fetched, expected in zip(fetched_images, exp_images):
+        diff = fetched - expected
+        assert np.all(diff == 0)

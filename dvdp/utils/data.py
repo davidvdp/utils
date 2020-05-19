@@ -1,8 +1,9 @@
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Union
 
+import cv2
+import numpy as np
 import pandas as pd
-
 
 class DataSaver:
     def __init__(self, name: Path, column_names: List[str], chunk_size=200):
@@ -73,3 +74,39 @@ class DataSaver:
 
     def __del__(self):
         self.__save()
+
+
+def fetch_images(
+    image_dir: Union[Path, str],
+    as_np_array: False,
+) -> List[Union[Path, np.ndarray]]:
+    """
+    Get all images from a directory.
+
+    image_dir can also be a single file. It will raise a FileNotFoundError
+    if image_dir does not exist.
+
+    :param image_dir: Directory containing images or an image file location.
+    :param as_np_array: It is possible to return the images as np.array's.
+    :return: List of Paths to images or list of numpy arrays.
+    """
+    image_dir = Path(image_dir)
+    if not image_dir.exists():
+        raise FileNotFoundError(f'{image_dir} does not exist.')
+    image_types = ['.jpg', '.bmp', '.tiff', '.png', '.gif']
+
+    all_images = []
+    if image_dir.is_file():
+        all_images.append(image_dir)
+    else:
+        for image_type in image_types:
+            all_images += [
+                image_loc
+                for image_loc in image_dir.glob('*' + image_type)
+            ]
+    all_images.sort()
+    if as_np_array:
+        return [
+            cv2.imread(str(image_loc), cv2.IMREAD_UNCHANGED)
+            for image_loc in all_images
+        ]
