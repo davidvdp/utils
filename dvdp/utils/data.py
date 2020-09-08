@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Any, Union
+from typing import Dict, List, Any, Union, Optional
 
 import cv2
 import numpy as np
@@ -51,6 +51,9 @@ class DataSaver:
         dir = Path(first_file).parent
         ext = first_file.suffix
 
+        if not first_file.exists():
+            raise FileNotFoundError(f'Could not find first file {first_file}')
+
         file_idx = -1
         files = []
         while True:
@@ -73,12 +76,14 @@ class DataSaver:
         }
 
     def __del__(self):
-        self.__save()
+        if len(self.__data_frame) != 0:
+            self.__save()
 
 
 def fetch_images(
     image_dir: Union[Path, str],
-    as_np_array: False,
+    as_np_array=False,
+    glob: Optional[str]=None,
 ) -> List[Union[Path, np.ndarray]]:
     """
     Get all images from a directory.
@@ -88,6 +93,8 @@ def fetch_images(
 
     :param image_dir: Directory containing images or an image file location.
     :param as_np_array: It is possible to return the images as np.array's.
+    :param glob: It is possible to return the images in dir using a glob
+    seach pattern.
     :return: List of Paths to images or list of numpy arrays.
     """
     image_dir = Path(image_dir)
@@ -99,10 +106,16 @@ def fetch_images(
     if image_dir.is_file():
         all_images.append(image_dir)
     else:
-        for image_type in image_types:
+        if glob is None:
+            for image_type in image_types:
+                all_images += [
+                    image_loc
+                    for image_loc in image_dir.glob('*' + image_type)
+                ]
+        else:
             all_images += [
                 image_loc
-                for image_loc in image_dir.glob('*' + image_type)
+                for image_loc in image_dir.glob(glob)
             ]
     all_images.sort()
     if as_np_array:
