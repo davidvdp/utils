@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
+
 class DataSaver:
     def __init__(self, name: Path, column_names: List[str], chunk_size=200):
         """
