@@ -25,7 +25,7 @@ def main():
 
     args = parser.parse_args()
     filelist = args.filelist
-    name = args.name.lower()
+    name = args.packagename.lower()
     version = args.version
 
     paths = parse_log_for_paths(filelist)
