@@ -90,3 +90,4 @@ def create_package(
     package_source_loc = destination / (name + '.deb')
     package_dest_loc = destination / (name + '-' + version + '.deb')
     shutil.move(str(package_source_loc), str(package_dest_loc))
+    print(f'Saved debain package to {str(package_dest_loc)}')
