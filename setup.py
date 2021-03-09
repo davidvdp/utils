@@ -9,14 +9,14 @@ with open(this_dir / 'requirements.txt') as file:
 with open(this_dir / 'README.md') as file:
     long_description = file.read()
 
-version = '0.0.4'
+version = '0.0.5'
 package_name = 'utils'
 top_ns = 'dvdp'
 
 setup(
     name=f'{top_ns}.{package_name}',
     version=version,
-    packages=[f'{top_ns}.{package_name}'],
+    packages=setuptools.find_packages(),
     download_url=f'https://github.com/davidvdp/{package_name}/archive/v'
                  f'{version}.tar.gz',
     url=f'https://github.com/davidvdp/{package_name}',
