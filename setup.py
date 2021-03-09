@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from pathlib import Path
 
 this_dir = Path(__file__).parent
@@ -16,7 +16,7 @@ top_ns = 'dvdp'
 setup(
     name=f'{top_ns}.{package_name}',
     version=version,
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     download_url=f'https://github.com/davidvdp/{package_name}/archive/v'
                  f'{version}.tar.gz',
     url=f'https://github.com/davidvdp/{package_name}',
