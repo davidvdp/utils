@@ -9,7 +9,7 @@ with open(this_dir / 'requirements.txt') as file:
 with open(this_dir / 'README.md') as file:
     long_description = file.read()
 
-version = '0.0.3'
+version = '0.0.4'
 package_name = 'utils'
 top_ns = 'dvdp'
 
